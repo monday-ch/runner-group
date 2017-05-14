@@ -15,7 +15,12 @@ const config = {
             index: 3,
             path_regex: /^https?:\/\/wap.thejoyrun.com\/(.+).html/,
             is_load: true
-        } //悦跑圈
+        }, //悦跑圈
+        garmin:{
+            index:4,
+            path_regex:/^https:\/\/connect.garmin.\S{0,3}\/modern\/activity\/(.+)/,
+            is_load:true
+        }
     }
 }
 module.exports = config;
