@@ -1,0 +1,24 @@
+{
+  "name": "runner-group",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^2.4.0",
+    "cheerio": "^0.22.0",
+    "express": "^4.15.2",
+    "finis": "0.0.2",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "mongoose": "^4.9.8",
+    "qrcode-terminal": "^0.11.0",
+    "request": "^2.81.0",
+    "wechaty": "^0.8.30"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
