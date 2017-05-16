@@ -51,6 +51,7 @@ class MessageHandler {
         sessionContext[chat_id] = sessionContext[chat_id] || {};
         const ready_delete = sessionContext[chat_id]['ready_delete'];
         sessionContext[chat_id]['ready_delete'] = '';
+        let isSummary = false;
         switch (true) {
             case orders.del.test(commandMsg.order):
                 const index = commandMsg.order.match(orders.del)[1];
@@ -84,7 +85,7 @@ class MessageHandler {
                 }
                 break;
             case orders.help.test(commandMsg.order):
-                callback(`查看 [本周|上周|本月|上月|今日|昨天] \n    可以@某些人来指定查看对象，默认本周\n    举例：查看 本周 @张三@李四\n\n删除 [最近列表中ID]\n\n 保存 时间|距离\n\n帮助`);
+                callback(`查看 [本周|上周|本月|上月|汇总] \n    可以@某些人来指定查看对象，默认本周\n    举例：查看 本周 @张三@李四\n\n删除 [最近列表中ID]\n\n 保存 时间|距离\n\n帮助`);
                 break;
             case orders.query.test(commandMsg.order):
                 const param = commandMsg.order.match(orders.query)[1];
@@ -126,6 +127,8 @@ class MessageHandler {
                             $lte: moment().add(-1, 'month').endOf('month').valueOf()
                         }
                         break;
+                    case '汇总':
+                        isSummary = true;
                     case '本周':
                     default:
                         condition.run_date = {
@@ -149,7 +152,7 @@ class MessageHandler {
                             callback(`没有获取到数据记录`)
                             console.log(error);
                         } else {
-                            if (data.length > 30) {
+                            if (data.length > 30 || isSummary) {
                                 //大于30条 进行数据汇总显示
                                 const summary = {};
                                 _.forEach(data, (one) => {
@@ -158,15 +161,17 @@ class MessageHandler {
                                     };
                                     summary[one.runner_id].times++;
                                     summary[one.runner_id].total_distance += one.total_distance;
+                                    summary[one.runner_id].total_time += one.total_time;
                                 })
                                 callback(_.map(summary, (one) => {
-                                    return `${one.name} | ${one.times}次 | ${one.total_distance} KM`;
+                                    const duration = moment.duration(one.total_time);
+                                    return `${one.name} 跑步 ${one.times}次 共 ${one.total_distance} KM 总用时 ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
                                 }).join('\n'))
                             } else {
                                 sessionContext[chat_id]['lastList'] = _.map(data, '_id');
                                 const sendMsg = _.map(data, (one, index) => {
                                     const duration = moment.duration(one.total_time);
-                                    return `${index + 1}| ${one.runner} | ${moment(one.run_date).format('MM-DD')} | ${one.total_distance}KM | ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
+                                    return `编号(${index + 1})  ${one.runner} 在${moment(one.run_date).format('MM-DD')} 跑步 ${one.total_distance}KM，用时 ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
                                 })
                                 callback(sendMsg.join('\n'))
                             }
