@@ -89,11 +89,11 @@ class MessageHandler {
             case orders.query.test(commandMsg.order):
                 const param = commandMsg.order.match(orders.query)[1];
                 const condition = {};
-                if (commandMsg.room) {
-                    condition.group = commandMsg.room.id;
-                } else {
-                    condition.runner_id = commandMsg.from;
-                }
+                // if (commandMsg.room) {
+                //     condition.group = commandMsg.room.id;
+                // } else {
+                //     condition.runner_id = commandMsg.from;
+                // }
 
                 switch (param) {
                     case '本月':
