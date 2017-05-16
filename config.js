@@ -1,5 +1,5 @@
 const config = {
-    bot_name: /^@打个酱油\s*/,
+    bot_name: /^@小白\s*/,
     device: {
         manual: {
             index: 1,
