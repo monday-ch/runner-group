@@ -54,38 +54,39 @@ class MessageHandler {
         let isSummary = false;
         switch (true) {
             case orders.del.test(commandMsg.order):
-                const index = commandMsg.order.match(orders.del)[1];
-                if (_.isEmpty(index)) {
-                    if (ready_delete) {
-                        model.runningInfo.findByIdAndRemove(ready_delete, (error) => {
-                            if (error) {
-                                callback(`删除失败`)
-                                console.log(error);
-                            } else {
-                                callback(`已删除`)
-                            }
-                        })
-                    } else {
-                        sessionContext[chat_id]['ready_delete'] = '';
-                        callback(`没有指定要删除的记录`)
-                    }
-                } else {
-                    if (sessionContext[chat_id]['lastList'] && sessionContext[chat_id]['lastList'][index * 1 - 1]) {
-                        model.runningInfo.findByIdAndRemove(sessionContext[chat_id]['lastList'][index * 1 - 1], (error) => {
-                            if (error) {
-                                callback(`删除失败`)
-                                console.log(error);
-                            } else {
-                                callback(`已删除`)
-                            }
-                        })
-                    } else {
-                        callback(`找不到指定条目`)
-                    }
-                }
+                callback(`随便删除记录可是不好的哦^_^`)
+                // const index = commandMsg.order.match(orders.del)[1];
+                // if (_.isEmpty(index)) {
+                //     if (ready_delete) {
+                //         model.runningInfo.findByIdAndRemove(ready_delete, (error) => {
+                //             if (error) {
+                //                 callback(`删除失败`)
+                //                 console.log(error);
+                //             } else {
+                //                 callback(`已删除`)
+                //             }
+                //         })
+                //     } else {
+                //         sessionContext[chat_id]['ready_delete'] = '';
+                //         callback(`没有指定要删除的记录`)
+                //     }
+                // } else {
+                //     if (sessionContext[chat_id]['lastList'] && sessionContext[chat_id]['lastList'][index * 1 - 1]) {
+                //         model.runningInfo.findByIdAndRemove(sessionContext[chat_id]['lastList'][index * 1 - 1], (error) => {
+                //             if (error) {
+                //                 callback(`删除失败`)
+                //                 console.log(error);
+                //             } else {
+                //                 callback(`已删除`)
+                //             }
+                //         })
+                //     } else {
+                //         callback(`找不到指定条目`)
+                //     }
+                // }
                 break;
             case orders.help.test(commandMsg.order):
-                callback(`查看 [本周|上周|本月|上月|汇总] \n    可以@某些人来指定查看对象，默认本周\n    举例：查看 本周 @张三@李四\n\n删除 [最近列表中ID]\n\n 保存 时间|距离\n\n帮助`);
+                callback(`查看 [本周|上周|本月|上月|汇总] \n    可以@某些人来指定查看对象，默认本周\n    举例：查看 本周 @张三@李四\n\n 保存 时间|距离\n\n帮助`);
                 break;
             case orders.query.test(commandMsg.order):
                 const param = commandMsg.order.match(orders.query)[1];
@@ -154,15 +155,13 @@ class MessageHandler {
                         } else {
                             if (data.length > 30 || isSummary) {
                                 //大于30条 进行数据汇总显示
-                                const summary = {
-                                    times: 0,
-                                    total_distance: 0,
-                                    total_time: 0
-
-                                };
+                                const summary = {}
                                 _.forEach(data, (one) => {
                                     summary[one.runner_id] = summary[one.runner_id] || {
-                                        name: one.runner
+                                        name: one.runner,
+                                        times: 0,
+                                        total_distance: 0,
+                                        total_time: 0
                                     };
                                     summary[one.runner_id].times++;
                                     summary[one.runner_id].total_distance += one.total_distance;
@@ -176,7 +175,8 @@ class MessageHandler {
                                 sessionContext[chat_id]['lastList'] = _.map(data, '_id');
                                 const sendMsg = _.map(data, (one, index) => {
                                     const duration = moment.duration(one.total_time);
-                                    return `编号(${index + 1})  ${one.runner} 在${moment(one.run_date).format('MM-DD')} 跑步 ${one.total_distance}KM，用时 ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
+                                    //编号(${index + 1})  
+                                    return `${one.runner} 在${moment(one.run_date).format('MM-DD')} 跑步 ${one.total_distance}KM，用时 ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
                                 })
                                 callback(sendMsg.join('\n'))
                             }
@@ -218,7 +218,7 @@ class MessageHandler {
                         const chat_id = urlMsg.room || urlMsg.from;
                         sessionContext[chat_id] = sessionContext[chat_id] || {};
                         sessionContext[chat_id]['ready_delete'] = exist._id;
-                        return callback(`已存在：${exist.runner} | ${exist.total_distance} 公里(刪除直接@我 附带【删除】指令)`)
+                        return callback(`已存在：${exist.runner} | ${exist.total_distance} 公里`)
                     }
                     instance.save((error, saved) => {
                         if (!error && saved) {
