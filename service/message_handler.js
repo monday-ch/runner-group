@@ -154,7 +154,12 @@ class MessageHandler {
                         } else {
                             if (data.length > 30 || isSummary) {
                                 //大于30条 进行数据汇总显示
-                                const summary = {};
+                                const summary = {
+                                    times: 0,
+                                    total_distance: 0,
+                                    total_time: 0
+
+                                };
                                 _.forEach(data, (one) => {
                                     summary[one.runner_id] = summary[one.runner_id] || {
                                         name: one.runner
