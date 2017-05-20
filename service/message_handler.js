@@ -157,15 +157,15 @@ class MessageHandler {
                                 //大于30条 进行数据汇总显示
                                 const summary = {}
                                 _.forEach(data, (one) => {
-                                    summary[one.runner_id] = summary[one.runner_id] || {
+                                    summary[one.runner] = summary[one.runner] || {
                                         name: one.runner,
                                         times: 0,
                                         total_distance: 0,
                                         total_time: 0
                                     };
-                                    summary[one.runner_id].times++;
-                                    summary[one.runner_id].total_distance += one.total_distance;
-                                    summary[one.runner_id].total_time += one.total_time;
+                                    summary[one.runner].times++;
+                                    summary[one.runner].total_distance += one.total_distance;
+                                    summary[one.runner].total_time += one.total_time;
                                 })
                                 callback(_.map(summary, (one) => {
                                     const duration = moment.duration(one.total_time);
