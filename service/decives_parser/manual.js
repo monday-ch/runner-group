@@ -7,7 +7,7 @@ class Codoon extends BaseParser {
     constructor(urlInfo) {
         super(urlInfo)
         this.device = config.device.manual;
-    }
+    } 
 
     fetchData(callback) {
         if (_.isEmpty(this.addition)) {
@@ -23,8 +23,8 @@ class Codoon extends BaseParser {
         let distance = "";
         let calories = 0;
         const format = /(\d{1,2}:\d{1,2}:\d{1,2})[\|\s](\d+\.?\d*)/;
-        const timeRegex = /\d{1,2}:\d{1,2}:\d{1,2}/;
-        const distanceRegex = /(\d+\.?\d*)\s*(千米|KM)/
+        const timeRegex = /\d{0,2}:?\d{1,2}:\d{1,2}/;
+        const distanceRegex = /(\d+\.?\d*)\s*(千米|KM|公里)/
         const caloriesRegex = /(\d+\.?\d*)\s*(千卡|大卡)/
         if (format.test(this.addition)) {
             const matchResult = this.addition.match(format);
@@ -33,6 +33,7 @@ class Codoon extends BaseParser {
         } else {
             if (timeRegex.test(this.addition) && distanceRegex.test(this.addition)) {
                 time = this.addition.match(timeRegex)[0];
+                time.split(':').length === 2 && (time = '0:' + time)
                 distance = this.addition.match(distanceRegex)[1];
                 calories = this.addition.match(caloriesRegex)[1];
             } else {

@@ -169,7 +169,7 @@ class MessageHandler {
                                 })
                                 callback(_.map(summary, (one) => {
                                     const duration = moment.duration(one.total_time);
-                                    return `${one.name} 跑步 ${one.times}次 共 ${one.total_distance} KM 总用时 ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
+                                    return `${one.name} 跑步 ${one.times}次 共 ${one.total_distance.toFixed(2)} KM 总用时 ${duration.get('hours')}:${duration.get('minutes')}:${duration.get('seconds')}`;
                                 }).join('\n'))
                             } else {
                                 sessionContext[chat_id]['lastList'] = _.map(data, '_id');
