@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-const db = mongoose.createConnection('127.0.0.1:27017/runner-group');
-//const db = mongoose.createConnection('mongodb://zhaoli:liai@127.0.0.1:27017/runner-group');
+const db = mongoose.createConnection('mongodb://127.0.0.1:27017/runner-group');
 
 db.on('error', (error) => {
     console.log(`connect-error: ${error}`)
